@@ -1,7 +1,7 @@
 <?php
 // Configure your Subject Prefix and Recipient here
-$subjectPrefix = '';
-$emailTo       = '[Project Name]';
+$subjectPrefix = 'Relacionamento Comercial';
+$emailTo       = ' lucas_rc15@live.com';
 
 $errors = array(); // array to hold validation errors
 $data   = array(); // array to pass back data
@@ -31,9 +31,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $subject = "Message from $subjectPrefix";
         $body    = '
-            <strong>Name: </strong>'.$name.'<br />
-            <strong>Email: </strong>'.$email.'<br />
-            <strong>Message: </strong>'.nl2br($message).'<br />
+            Nome: '.$name.'
+            E-mail: '.$email.'
+            Mensagem: '.nl2br($message).'
         ';
 
         $headers  = "MIME-Version: 1.1" . PHP_EOL;
@@ -53,7 +53,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $data['success'] = true;
-        $data['confirmation'] = 'Congratulations. Your message has been sent successfully';
+        $data['confirmation'] = 'Obrigado por entrar em contato! Em breve retornaremos.';
     }
 
     // return all our data to an AJAX call

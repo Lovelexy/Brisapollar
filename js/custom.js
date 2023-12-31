@@ -1309,31 +1309,37 @@ $(document).ready(function () {
     var form = $('#mc-form');
 
     if (form.length) {
-      form.ajaxChimp({
-        callback: mailchimpCallback,
-        // Replace the URL above with your mailchimp URL (put your URL inside '').
-        url: ''
+      form.submit(function(e) {
+        e.preventDefault(); // Impede o envio padrão do formulário
+    
+        var formData = form.serialize(); // Obtém os dados do formulário
+    
+        $.ajax({
+          type: 'POST',
+          url: './php/newsletter-process.php', // Arquivo PHP responsável pelo envio do e-mail
+          data: formData,
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Envio bem-sucedido, exiba uma mensagem de sucesso para o usuário
+              var messageContainer = $('#message-newsletter');
+              messageContainer.removeClass('error').addClass('success').html(response.confirmation);
+              messageContainer.slideDown('slow', 'swing');
+    
+              form.find('.form-control').val(''); // Limpa os campos do formulário
+            } else {
+              // Ocorreu um erro no envio, exiba uma mensagem de erro para o usuário
+              var messageContainer = $('#message-newsletter');
+              messageContainer.removeClass('success').addClass('error').html(response.errors.email);
+              messageContainer.slideDown('slow', 'swing');
+            }
+          },
+          error: function(xhr, status, error) {
+            // Ocorreu um erro na requisição AJAX
+            console.log('Erro na requisição AJAX: ' + error);
+          }
+        });
       });
-    }
-
-    // callback function when the form submitted, show the notification box
-    function mailchimpCallback(resp) {
-      var messageContainer = $('#message-newsletter');
-      messageContainer.removeClass('error');
-
-      form.find('.form-group').removeClass('error');
-      if (resp.result === 'error') {
-        form.find('.input-group').addClass('error');
-        messageContainer.addClass('error');
-      } else {
-        form.find('.form-control').fadeIn().val('');
-      }
-
-      messageContainer.slideDown('slow', 'swing');
-
-      setTimeout(function () {
-        messageContainer.slideUp('slow', 'swing');
-      }, 10000);
     }
 
 
